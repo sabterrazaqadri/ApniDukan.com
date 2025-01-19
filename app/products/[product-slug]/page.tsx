@@ -74,7 +74,7 @@ export default function ProductPage() {
     return (
       <div className="flex justify-center items-center min-h-screen bg-pink-50">
         <p className="text-xl text-gray-600">
-          Sorry, the product you're looking for could not be found.
+          Sorry, the product you&apos;re looking for could not be found.
         </p>
       </div>
     );

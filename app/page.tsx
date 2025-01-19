@@ -1,7 +1,6 @@
 import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 import Hero from "./Components/Hero";
-import Card from "./Components/Card";
 import FeaturedCategories from "./Components/FeaturedCategories";
 
 export default async function Home() {
