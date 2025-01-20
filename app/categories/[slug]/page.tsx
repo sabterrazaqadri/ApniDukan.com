@@ -14,9 +14,15 @@ interface Product {
   description: string;
   price: number;
   image: any;
-  slug: {
-    current: string;
+  slug: string;
+  ingredients?: string[];
+  nutritionalInfo?: {
+    calories?: number;
+    protein?: number;
+    carbs?: number;
+    fat?: number;
   };
+  allergens?: string[];
 }
 
 interface Category {
@@ -32,36 +38,44 @@ export default function CategoryPage() {
 
   useEffect(() => {
     const fetchCategoryProducts = async () => {
-      const result = await client.fetch(
-        groq`*[_type == "product" && category._ref in *[_type == "category" && slug.current == $slug]._id]{
-          _id,
-          name,
-          description,
-          price,
-          image,
-          "slug": slug.current
-        }`,
-        { slug }
-      );
+      try {
+        const result = await client.fetch(
+          groq`*[_type == "product" && category._ref in *[_type == "category" && slug.current == $slug]._id]{
+            _id,
+            name,
+            description,
+            price,
+            image,
+            "slug": slug.current,
+            ingredients,
+            nutritionalInfo,
+            allergens
+          }`,
+          { slug }
+        );
 
-      const categoryDetails = await client.fetch(
-        groq`*[_type == "category" && slug.current == $slug][0]{
-          name
-        }`,
-        { slug }
-        , {cache:'no-store'}
-      );
+        const categoryDetails = await client.fetch(
+          groq`*[_type == "category" && slug.current == $slug][0]{
+            name
+          }`,
+          { slug }
+        );
 
-      setProducts(result);
-      setCategory(categoryDetails);
-      setLoading(false);
+        setProducts(result);
+        setCategory(categoryDetails);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchCategoryProducts();
   }, [slug]);
 
-  const handleProductClick = (slug: string) => {
-    router.push(`/products/${slug}`);
+  const handleProductClick = (productSlug: string) => {
+    console.log('Clicking product with slug:', productSlug);
+    router.push(`/products/${productSlug}`);
   };
 
   if (loading) {
@@ -81,7 +95,7 @@ export default function CategoryPage() {
             {category?.name || 'Category'}
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Browse our wide range of {category?.name || 'products'} and choose your favorites.
+            Browse our wide range of {category?.name.toLowerCase() || 'products'} and choose your favorites.
           </p>
         </div>
 
@@ -91,7 +105,7 @@ export default function CategoryPage() {
             <div
               key={product._id}
               className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-              onClick={() => handleProductClick(product.slug.current)}
+              onClick={() => handleProductClick(product.slug)}
             >
               <div className="relative h-64">
                 <Image
@@ -103,7 +117,7 @@ export default function CategoryPage() {
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
                   {product.name}
                 </h3>
                 <p className="text-gray-600 text-sm mb-4 line-clamp-2">
@@ -111,7 +125,7 @@ export default function CategoryPage() {
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-2xl font-bold text-pink-600">
-                    ${product.price.toFixed(2)}
+                    Rs{product.price.toFixed(2)}
                   </span>
                   <button
                     className="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition-colors"
@@ -127,6 +141,14 @@ export default function CategoryPage() {
             </div>
           ))}
         </div>
+
+        {products.length === 0 && !loading && (
+          <div className="text-center py-12">
+            <p className="text-xl text-gray-600">
+              No products found in this category.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

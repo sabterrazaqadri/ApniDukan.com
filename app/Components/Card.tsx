@@ -7,7 +7,7 @@ import Image from 'next/image';
 const Card = async () => {
     
     const products = await client.fetch(groq`*[_type=="product"]`,{ caches: 'no-store' }) 
-    
+        
 
     return (
         <div className="max-w-8xl mx-auto px-4 flex justify-center sm:px-6 lg:px-8 py-12 bg-pink-50">
