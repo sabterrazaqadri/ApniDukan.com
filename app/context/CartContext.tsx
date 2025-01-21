@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
@@ -37,7 +40,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('cart', JSON.stringify(items));
   }, [items]);
 
-  const addToCart = (product: any, quantity: number) => {
+  const addToCart = (product: any , quantity: number) => {
     setItems(currentItems => {
       const existingItem = currentItems.find(item => item._id === product._id);
       
