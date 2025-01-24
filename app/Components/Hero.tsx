@@ -1,5 +1,6 @@
 'use client';
-
+import Image from "next/image";
+import mainImg from "./img.png"
 
 const Hero = () => {
     return (
@@ -39,7 +40,8 @@ const Hero = () => {
                             <div className="absolute inset-0 transform -rotate-6 bg-pink-100 rounded-2xl shadow-lg">
                                 {/* Placeholder for actual product image */}
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <span className="text-pink-500 text-lg font-medium">Your Featured Product Image</span>
+                                    {/* <span className="text-pink-500 text-lg font-medium">Your Featured Product Image</span> */}
+                                    <Image src={mainImg} alt="img" height={500} width={500}></Image>
                                 </div>
                             </div>
                         </div>

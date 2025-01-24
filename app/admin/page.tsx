@@ -67,7 +67,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     checkAuth();
-  }, [checkAuth]);
+  }, [router] );
 
   const handleLogout = () => {
     localStorage.removeItem('adminAuthenticated');
