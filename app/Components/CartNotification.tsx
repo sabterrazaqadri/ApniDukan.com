@@ -52,7 +52,7 @@ const CartNotification = ({ isOpen, onClose, productName }: CartNotificationProp
             Item Added to Cart!
           </h3>
           <p className="text-sm text-gray-500 mb-6">
-            You've added {productName} to your cart
+            You&apos;ve added {productName} to your cart
           </p>
 
           {/* Buttons */}
