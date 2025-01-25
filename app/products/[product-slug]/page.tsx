@@ -11,6 +11,7 @@ import { groq } from 'next-sanity';
 import { urlFor } from '@/sanity/lib/image';
 import { useEffect, useState } from 'react';
 import { useCart } from '@/app/context/CartContext';
+import CartNotification from '@/app/Components/CartNotification';
 
 interface Product {
     _id: string;
@@ -35,6 +36,7 @@ export default function ProductPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [quantity, setQuantity] = useState(1);
+    const [showNotification, setShowNotification] = useState(false);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -91,7 +93,7 @@ export default function ProductPage() {
     const handleAddToCart = () => {
         if (product) {
             addToCart(product, quantity);
-            alert(`Added ${quantity} ${product.name}(s) to cart!`);
+            setShowNotification(true);
         }
     };
 
@@ -118,6 +120,13 @@ export default function ProductPage() {
 
     return (
         <div className="min-h-screen bg-pink-50">
+            {showNotification && (
+                <CartNotification
+                    isOpen={showNotification}
+                    onClose={() => setShowNotification(false)}
+                    productName={product.name}
+                />
+            )}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Product Image */}
@@ -138,7 +147,7 @@ export default function ProductPage() {
                             {product.name}
                         </h1>
                         <p className="text-2xl font-bold text-pink-600 mb-6">
-                            ${product.price.toFixed(2)}
+                            Rs{product.price.toFixed(2)}
                         </p>
                         <p className="text-gray-600 mb-8">
                             {product.description}

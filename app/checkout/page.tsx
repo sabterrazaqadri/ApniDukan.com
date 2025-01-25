@@ -3,6 +3,7 @@
 import { useCart } from '@/app/context/CartContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { client } from '@/sanity/lib/client';
 
 interface OrderForm {
   name: string;
@@ -27,7 +28,6 @@ export default function CheckoutPage() {
     notes: ''
   });
 
-  // Clear any previous errors when component mounts
   useEffect(() => {
     setError(null);
   }, []);
@@ -46,55 +46,37 @@ export default function CheckoutPage() {
     setError(null);
 
     try {
-      console.log('Starting checkout process...'); // Debug log
-
       const orderData = {
-        customer: formData,
-        items: items.map(item => ({
-          id: item._id,
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity
+        _type: 'order',
+        orderId: `ORD-${Date.now()}`, // Generate a unique order ID
+        customerName: formData.name,
+        customerEmail: formData.email,
+        customerPhone: formData.phone,
+        shippingAddress: formData.address,
+        orderItems: items.map(item => ({
+          _type: 'object',
+          product: {
+            _type: 'reference',
+            _ref: item._id
+          },
+          quantity: item.quantity,
+          price: item.price
         })),
-        total,
+        totalAmount: total,
+        status: 'pending',
         orderDate: new Date().toISOString()
       };
 
-      console.log('Order data prepared:', orderData); // Debug log
-
-      // Save order to localStorage
-      try {
-        const savedOrders = localStorage.getItem('orders');
-        const orders = savedOrders ? JSON.parse(savedOrders) : [];
-        orders.push(orderData);
-        localStorage.setItem('orders', JSON.stringify(orders));
-        console.log('Order saved to localStorage'); // Debug log
-      } catch (storageError) {
-        console.error('Error saving to localStorage:', storageError);
-        throw new Error('Failed to save order data');
-      }
+      // Save order to Sanity
+      const response = await client.create(orderData);
+      console.log('Order saved to Sanity:', response);
 
       // Clear the cart
-      try {
-        clearCart();
-        console.log('Cart cleared successfully'); // Debug log
-      } catch (cartError) {
-        console.error('Error clearing cart:', cartError);
-        throw new Error('Failed to clear cart');
-      }
+      clearCart();
+      console.log('Cart cleared successfully');
 
-      console.log('Attempting navigation to success page...'); // Debug log
-      
       // Navigate to success page
       router.replace('/checkout/success');
-      
-      // Fallback navigation after a short delay if replace doesn't work
-      setTimeout(() => {
-        if (window.location.pathname !== '/checkout/success') {
-          console.log('Fallback navigation triggered'); // Debug log
-          window.location.href = '/checkout/success';
-        }
-      }, 1000);
 
     } catch (error) {
       console.error('Error in checkout process:', error);
@@ -113,19 +95,15 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-pink-50 py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
-        
         {error && (
           <div className="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
             {error}
           </div>
         )}
-
         <div className="bg-white rounded-lg shadow-md p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
               <input
                 type="text"
                 id="name"
@@ -136,11 +114,8 @@ export default function CheckoutPage() {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
               />
             </div>
-
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
               <input
                 type="email"
                 id="email"
@@ -151,11 +126,8 @@ export default function CheckoutPage() {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
               />
             </div>
-
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                Phone Number
-              </label>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
               <input
                 type="tel"
                 id="phone"
@@ -166,11 +138,8 @@ export default function CheckoutPage() {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
               />
             </div>
-
             <div>
-              <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                Delivery Address
-              </label>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700">Delivery Address</label>
               <textarea
                 id="address"
                 name="address"
@@ -181,11 +150,8 @@ export default function CheckoutPage() {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
               />
             </div>
-
             <div>
-              <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                City
-              </label>
+              <label htmlFor="city" className="block text-sm font-medium text-gray-700">City</label>
               <input
                 type="text"
                 id="city"
@@ -196,11 +162,8 @@ export default function CheckoutPage() {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
               />
             </div>
-
             <div>
-              <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-                Order Notes (Optional)
-              </label>
+              <label htmlFor="notes" className="block text-sm font-medium text-gray-700">Order Notes (Optional)</label>
               <textarea
                 id="notes"
                 name="notes"
@@ -210,13 +173,11 @@ export default function CheckoutPage() {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
               />
             </div>
-
             <div className="border-t pt-6">
               <div className="flex justify-between text-base font-medium text-gray-900 mb-4">
                 <p>Total</p>
                 <p>Rs{total.toFixed(2)}</p>
               </div>
-
               <button
                 type="submit"
                 disabled={loading}

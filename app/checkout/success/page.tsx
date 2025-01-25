@@ -1,55 +1,51 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useCart } from '@/app/context/CartContext';
+import Link from 'next/link';
 
-export default function CheckoutSuccessPage() {
+export default function CheckoutSuccess() {
   const router = useRouter();
+  const { clearCart } = useCart();
 
   useEffect(() => {
-    // Check if we came from a valid checkout
-    const orders = localStorage.getItem('orders');
-    if (!orders) {
-      // If no orders exist, redirect to home
-      router.replace('/');
-    }
-  }, [router]);
+    clearCart();
+  }, [clearCart]);
 
   return (
-    <div className="min-h-screen bg-pink-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+    <div className="min-h-screen bg-pink-50 flex items-center justify-center px-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
+        <div className="mb-6">
+          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+            <svg
+              className="h-6 w-6 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
           </div>
-          
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Order Placed Successfully!
-          </h1>
-          
-          <p className="text-gray-600 mb-8">
-            Thank you for your order. We&apos;ll process it right away and send you a confirmation email with the details.
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Thank you for your purchase. Your order has been received and is being processed.
           </p>
-
-          <div className="space-y-4">
-            <Link
-              href="/"
-              className="inline-block w-full bg-pink-600 text-white px-6 py-3 rounded-md hover:bg-pink-700 transition-colors"
-            >
-              Continue Shopping
-            </Link>
-            
-            <Link
-              href="/admin"
-              className="inline-block w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-200 transition-colors"
-            >
-              View Orders
-            </Link>
-          </div>
         </div>
+
+        <Link
+          href="./"
+          className="inline-block w-full px-6 py-3 text-center text-white bg-pink-600 rounded-md hover:bg-pink-700 transition-colors"
+        >
+          Continue Shopping
+        </Link>
       </div>
     </div>
   );
