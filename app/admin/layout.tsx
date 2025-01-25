@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { isAdmin } from '@/utils/adminAuth';
+// import { isAdmin } from '@/utils/adminAuth';
 
 export default function AdminLayout({
   children,
@@ -12,17 +12,17 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-  useEffect(() => {
-    // Skip check for login page
-    if (pathname === '/admin/login') {
-      return;
-    }
+  // useEffect(() => {
+  //   // Skip check for login page
+  //   if (pathname === '/admin/login') {
+  //     return;
+  //   }
 
-    // Check if user is admin
-    if (!isAdmin()) {
-      router.push('/admin/login');
-    }
-  }, [pathname, router]);
+  //   // Check if user is admin
+  //   if (!isAdmin()) {
+  //     router.push('/admin/login');
+  //   }
+  // }, [pathname, router]);
 
   return (
     <div className="min-h-screen bg-gray-100">
