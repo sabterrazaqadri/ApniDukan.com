@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { isAdmin } from '@/utils/adminAuth';
+import { isAdmin } from '../../utils/adminAuth';
 
 export default function AdminLayout({
   children,
