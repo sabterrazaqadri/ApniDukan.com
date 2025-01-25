@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { setAdminToken } from '@/utils/adminAuth';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -18,8 +17,7 @@ export default function AdminLogin() {
       // In a real application, you would validate against your backend
       if (email === 'admin@apnidukan.com' && password === 'admin123') {
         // Set admin token in cookies
-        setAdminToken('your-secure-token-here');
-        router.push('/admin/orders');
+        router.push('/admin');
       } else {
         setError('Invalid credentials');
       }
