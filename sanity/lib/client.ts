@@ -1,11 +1,11 @@
-import { createClient } from 'next-sanity'
+import { createClient } from '@sanity/client';
 
-import { apiVersion, dataset, projectId, token } from '../env'
-
-export const client = createClient({
-  projectId: "1ha5p240",
-  dataset: "production",
-  apiVersion: '2021-03-25',
-  token: process.env.NEXT_PUBLIC_SANITY_API_TOKEN,
-  useCdn: false,
+const client = createClient({
+  projectId: process.env.SANITY_PROJECT_ID || '1ha5p240',
+  dataset: process.env.SANITY_DATASET || 'production',
+  apiVersion: '2023-01-01', // Adjust based on your API version
+  token: process.env.SANITY_API_TOKEN, // Use the token securely
+  useCdn: false, // Disable CDN for write operations
 });
+
+export default client;
