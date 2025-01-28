@@ -3,7 +3,7 @@
 import { useCart } from '@/app/context/CartContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { client } from '@/sanity/lib/client';
+import  client from '@/sanity/lib/client';
 
 interface OrderForm {
   name: string;

@@ -49,7 +49,7 @@ export default function CartPage() {
                     <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
                     <p className="text-pink-600 font-semibold">Rs{item.price.toFixed(2)}</p>
                   </div>
-                  <div className="flex items-center space-x-4">
+                  <div className="md:flex items-center space-x-4">
                     <div className="flex items-center border border-gray-300 rounded-md">
                       <button
                         className="px-3 py-1 text-pink-600 hover:bg-pink-50"

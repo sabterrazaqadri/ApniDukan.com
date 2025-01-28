@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 
-import { client } from '@/sanity/lib/client';
+import client from '@/sanity/lib/client';
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 
