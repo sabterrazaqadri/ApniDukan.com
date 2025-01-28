@@ -103,9 +103,9 @@ const FeaturedCategories = () => {
           </button>
 
           {/* Categories Slider */}
-          <div className="overflow-hidden">
+          <div className="overflow-hidden ">
             <div
-              className="flex gap-6 transition-transform duration-500 ease-in-out"
+              className="flex gap-6  transition-transform duration-500 ease-in-out justify-center"
               style={{
                 transform: `translateX(-${currentIndex * (100 / Math.min(totalPages, 1))}%)`,
               }}

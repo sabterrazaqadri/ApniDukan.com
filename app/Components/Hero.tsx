@@ -35,7 +35,7 @@ const Hero = () => {
                     </div>
 
                     {/* Image/Decorative Element */}
-                    <div className="md:w-1/2 w-full relative h-64 md:h-96">
+                    <div className="md:w-1/2 w-full relative h-96">
                         <div className="absolute inset-0 bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl transform rotate-3">
                             <div className="absolute inset-0 transform -rotate-6 bg-pink-100 rounded-2xl shadow-lg">
                                 {/* Placeholder for actual product image */}
