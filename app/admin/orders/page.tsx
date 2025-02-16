@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { logoutAdmin } from '../../../utils/adminAuth';
-import { FiLogOut, FiPackage, FiRefreshCw, FiEye, FiCheck, FiX, FiCalendar } from 'react-icons/fi';
+import { FiLogOut, FiRefreshCw, FiEye, FiCheck, FiX, } from 'react-icons/fi';
 import { groq } from 'next-sanity';
 import client from '@/sanity/lib/client';
 import Image from 'next/image';
