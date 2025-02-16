@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 
 interface OrderItem {
   id: string;
@@ -55,19 +56,29 @@ export default function AdminDashboard() {
   };
 
   const checkAuth = () => {
-    const authStatus = localStorage.getItem('adminAuthenticated');
-    if (authStatus !== 'true') {
-      router.replace('/admin/login');
-    } else {
+    try {
+      const authStatus = localStorage.getItem('adminAuthenticated');
+      console.log('Auth Status:', authStatus);
+
+      if (authStatus !== 'true') {
+        router.replace('/admin/login');
+        return;
+      }
+
       setIsAuthenticated(true);
       loadOrders();
+      router.replace('/admin/orders');
+    } catch (error) {
+      console.error('Auth check error:', error);
+      router.replace('/admin/login');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
-  // useEffect(() => {
-  //   checkAuth();
-  // }, [router] );
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('adminAuthenticated');
@@ -168,7 +179,7 @@ export default function AdminDashboard() {
       {/* Admin Header */}
       <div className="bg-white shadow rounded-lg">
         <div className="px-4 py-5 sm:p-6 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+          <h1 className="text-2xl font-bold  text-gray-900">Admin Dashboard</h1>
           <button
             onClick={handleLogout}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"

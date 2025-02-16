@@ -1,10 +1,11 @@
 import { createClient } from '@sanity/client';
+import { apiVersion, dataset, projectId, token } from '../env';
 
 const client = createClient({
-  projectId: process.env.SANITY_PROJECT_ID || '1ha5p240',
-  dataset: process.env.SANITY_DATASET || 'production',
-  apiVersion: '2023-01-01', // Adjust based on your API version
-  token: process.env.SANITY_API_TOKEN, // Use the token securely
+  projectId,
+  dataset,
+  apiVersion, 
+  token,
   useCdn: false, // Disable CDN for write operations
 });
 

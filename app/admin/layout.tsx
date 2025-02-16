@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-// import { isAdmin } from '@/utils/adminAuth';
+import { isAdmin } from '@/utils/adminAuth';
 
 export default function AdminLayout({
   children,
@@ -14,35 +12,31 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-  // useEffect(() => {
-  //   // Skip check for login page
-  //   if (pathname === '/admin/login') {
-  //     return;
-  //   }
+  useEffect(() => {
+    if (pathname === '/admin/login') return;
+    
+    if (!isAdmin()) {
+      router.replace('/admin/login');
+    }
+  }, [pathname, router]);
 
-  //   // Check if user is admin
-  //   if (!isAdmin()) {
-  //     router.push('/admin/login');
-  //   }
-  // }, [pathname, router]);
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="bg-white shadow">
+    <div className="min-h-screen bg-pink-50">
+      <div className="shadow-md bg-pink-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex">
-              <div className="flex-shrink-0 flex items-center">
-                <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
-              </div>
+          <div className="flex justify-between h-16 items-center ">
+            <div className="flex-shrink-0 w-full">
+              <h1 className="text-2xl font-bold text-center text-white">Admin Dashboard</h1>
             </div>
           </div>
         </div>
       </div>
-      <main>
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {children}
-        </div>
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {children}
       </main>
     </div>
   );

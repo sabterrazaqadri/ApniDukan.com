@@ -8,7 +8,11 @@ body {
 
 @layer utilities {
   .text-balance {
-    text-wrap: balance;
+    @supports (text-wrap: balance) {
+      text-wrap: balance;
+    }
+    /* Fallback styles for older browsers */
+    /* Add fallback styles here */
   }
 }
 

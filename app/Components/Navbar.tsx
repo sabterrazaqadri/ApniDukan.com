@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/app/context/CartContext';
+import Image from 'next/image';
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -18,9 +19,12 @@ const Navbar = () => {
                 <div className="flex items-center justify-between h-16">
                     {/* Logo and Brand Name */}
                     <div className="flex-shrink-0 flex items-center">
-                        <Link href="/" className="text-2xl font-bold text-pink-600">
+                        <Image src={"/icon.png"} alt="Apni Dukan" width={50} height={50} />
+                        <div className='ml-1'><Link href="/" className="text-2xl font-bold text-pink-600">
                             Apni Dukan
                         </Link>
+                        <h6 className="text-xs font-semibold tracking-tighter text-pink-600">Yahan Sab Kuch Milta Hai</h6>
+                        </div>
                     </div>
 
                     {/* Desktop Navigation */}
@@ -36,7 +40,7 @@ const Navbar = () => {
                                 href="/products" 
                                 className="text-pink-600 hover:bg-pink-100 px-3 py-2 rounded-md text-sm font-medium"
                             >
-                                Products
+                                All Products
                             </Link>
                             <Link 
                                 href="/about" 
@@ -93,7 +97,7 @@ const Navbar = () => {
                             Home
                         </Link>
                         <Link href="/products" className="text-pink-600 hover:bg-pink-100 block px-3 py-2 rounded-md text-base font-medium">
-                            Products
+                            All Products
                         </Link>
                         <Link href="/about" className="text-pink-600 hover:bg-pink-100 block px-3 py-2 rounded-md text-base font-medium">
                             About Us

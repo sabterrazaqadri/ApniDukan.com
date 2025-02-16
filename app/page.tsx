@@ -1,7 +1,8 @@
-import  client  from "@/sanity/lib/client";
+import client from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 import Hero from "./Components/Hero";
 import FeaturedCategories from "./Components/FeaturedCategories";
+import NewArrivals from "./Components/NewArrivals";
 
 export default async function Home() {
 
@@ -9,10 +10,11 @@ export default async function Home() {
   console.log(products);
   
   return (
-    <div>
+    <div className="min-h-screen">
       <Hero />
       {/* <Card/> */}
       <FeaturedCategories/>
+      <NewArrivals />
     </div>
   );
 }

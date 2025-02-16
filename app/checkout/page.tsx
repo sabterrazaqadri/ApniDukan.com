@@ -32,6 +32,12 @@ export default function CheckoutPage() {
     setError(null);
   }, []);
 
+  useEffect(() => {
+    if (items.length === 0) {
+      router.push('/success');
+    }
+  }, [items, router]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -47,36 +53,50 @@ export default function CheckoutPage() {
 
     try {
       const orderData = {
-        _type: 'order',
-        orderId: `ORD-${Date.now()}`, // Generate a unique order ID
         customerName: formData.name,
         customerEmail: formData.email,
         customerPhone: formData.phone,
-        shippingAddress: formData.address,
+        shippingAddress: `${formData.address}, ${formData.city}`,
         orderItems: items.map(item => ({
-          _type: 'object',
           product: {
-            _type: 'reference',
-            _ref: item._id
+            _id: item._id,
+            name: item.name,
+            price: item.price,
+            image: item.image
           },
-          quantity: item.quantity,
-          price: item.price
+          quantity: item.quantity
         })),
         totalAmount: total,
-        status: 'pending',
-        orderDate: new Date().toISOString()
       };
 
-      // Save order to Sanity
-      const response = await client.create(orderData);
-      console.log('Order saved to Sanity:', response);
+      console.log('Sending order data:', JSON.stringify(orderData, null, 2));
 
-      // Clear the cart
-      clearCart();
-      console.log('Cart cleared successfully');
+      // Call your API to create the order
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
 
-      // Navigate to success page
-      router.replace('/checkout/success');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Clear the cart
+        clearCart();
+        console.log('Order created successfully:', result.order);
+
+        // Navigate to the success page using the redirect URL from the response
+        router.replace(result.redirect);
+      } else {
+        throw new Error(result.message || 'Failed to place order');
+      }
 
     } catch (error) {
       console.error('Error in checkout process:', error);
@@ -85,11 +105,6 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
-
-  if (items.length === 0) {
-    router.push('/cart');
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-pink-50 py-12">
