@@ -10,6 +10,9 @@ import { groq } from 'next-sanity';
 import { urlFor } from '@/sanity/lib/image';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { useCart } from '@/app/context/CartContext';
+import CartNotification from '@/app/Components/CartNotification';
+import Link from 'next/link';
 
 interface Product {
   _id: string;
@@ -38,6 +41,16 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { slug } = useParams();
+  const { addToCart } = useCart();
+  const [showNotification, setShowNotification] = useState(false);
+  const [addedProduct, setAddedProduct] = useState<Product | null>(null);
+
+  const handleAddToCart = (product: Product) => {
+    addToCart(product, 1);
+    setShowNotification(true);
+    setAddedProduct(product);
+    setTimeout(() => setShowNotification(false), 3000);
+  };
 
   useEffect(() => {
     const fetchCategoryProducts = async () => {
@@ -105,46 +118,39 @@ export default function CategoryPage() {
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {products.map((product: Product) => (
-            <div
-              key={product._id}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-              onClick={() => handleProductClick(product.slug)}
-            >
-              <div className="relative h-64">
-                <Image
-                  src={urlFor(product.image).url()}
-                  alt={product.name}
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-300"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
-                  {product.name}
-                </h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                  {product.description}
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-2xl font-bold text-pink-600">
-                    Rs{product.price.toFixed(2)}
-                  </span>
-                  <button
-                    className="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      // Add to cart functionality here
-                    }}
-                  >
-                    Add to Cart
-                  </button>
+            <div key={product._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+              <Link href={`/products/${product.slug}`}>
+                <div className="relative h-64">
+                  <Image
+                    src={urlFor(product.image).url()}
+                    alt={product.name}
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  />
                 </div>
-              </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-2xl font-bold text-pink-600">Rs{product.price.toFixed(2)}</span>
+                    <button
+                      className="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(product);
+                      }}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              </Link>
             </div>
           ))}
         </div>
 
+        {showNotification && <CartNotification isOpen={true} onClose={() => setShowNotification(false)} productName={addedProduct?.name || 'Product'} />}
         {products.length === 0 && !loading && (
           <div className="text-center py-12">
             <p className="text-xl text-gray-600">

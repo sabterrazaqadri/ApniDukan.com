@@ -78,13 +78,13 @@ const FeaturedCategories = () => {
   }
 
   return (
-    <div className="w-full bg-pink-50 py-12">
+    <div className="w-full bg-pink-50 py-12" id='menu'>
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
           Featured Categories
         </h2>
 
-        <div className="relative">
+        <div className="relative" >
           {/* Navigation Buttons */}
           <button
             onClick={prevSlide}
@@ -105,18 +105,18 @@ const FeaturedCategories = () => {
           {/* Categories Slider */}
           <div className="overflow-hidden ">
             <div
-              className="flex gap-6  transition-transform duration-500 ease-in-out justify-center"
+              className="flex gap-6 transition-transform duration-500 ease-in-out justify-center"
               style={{
-                transform: `translateX(-${currentIndex * (100 / Math.min(totalPages, 1))}%)`,
+                transform: `translateX(-${currentIndex * (50 / Math.min(totalPages, Math.ceil(categories.length / itemsToShow)))}%)`, // Adjusted for correct item rendering
               }}
             >
               {getCurrentCategories().map((category) => (
                 <Link
                   key={category._id}
                   href={`/categories/${category.slug.current}`}
-                  className="flex-none w-[calc(100%/6-1rem)] group"
+                  className="flex-none md:w-[calc(100%/7-1rem)] w-[calc(100%/4-1rem)] group" // round amount
                 >
-                  <div className="aspect-square relative rounded-full overflow-hidden mb-3 border-2 border-pink-200 group-hover:border-pink-500 transition-colors">
+                  <div className="aspect-square  relative rounded-full overflow-hidden mb-3 border-2 border-pink-200 group-hover:border-pink-500 transition-colors">
                     <Image
                       src={urlFor(category.image).url()}
                       alt={category.name}

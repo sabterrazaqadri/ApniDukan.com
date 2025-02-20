@@ -1,6 +1,7 @@
 'use client';
 import Image from "next/image";
 import mainImg from "./img.png"
+import Link from "next/link";
 
 const Hero = () => {
     return (
@@ -25,12 +26,12 @@ const Hero = () => {
                         Discover the best in snacks and groceries, all in one place. Enjoy easy shopping, unbeatable prices, and fast delivery, right at your fingertips. Explore now and stock up on your favorites!
                         </p>
                         <div className="mt-8 flex justify-center md:justify-start space-x-4">
-                            <button className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700">
+                            <Link href="/products"><button className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700">
                                 Shop Now
-                            </button>
-                            <button className="inline-flex items-center px-6 py-3 border border-pink-600 text-base font-medium rounded-md text-pink-600 bg-transparent hover:bg-pink-50">
+                            </button></Link>
+                            <Link href="#menu"><button className="inline-flex items-center px-6 py-3 border border-pink-600 text-base font-medium rounded-md text-pink-600 bg-transparent hover:bg-pink-50">
                                 Our Menu
-                            </button>
+                            </button></Link>
                         </div>
                     </div>
 

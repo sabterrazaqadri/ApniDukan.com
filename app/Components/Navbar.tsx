@@ -14,18 +14,18 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="bg-pink-50">
+        <nav className="bg-pink-50 ">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo and Brand Name */}
-                    <div className="flex-shrink-0 flex items-center">
+                    <Link href="/"><div className="flex-shrink-0 flex items-center">
                         <Image src={"/icon.png"} alt="Apni Dukan" width={50} height={50} />
-                        <div className='ml-1'><Link href="/" className="text-2xl font-bold text-pink-600">
+                        <div className='ml-1'><h1 className="text-2xl font-bold text-pink-600">
                             Apni Dukan
-                        </Link>
+                        </h1>
                         <h6 className="text-xs font-semibold tracking-tighter text-pink-600">Yahan Sab Kuch Milta Hai</h6>
                         </div>
-                    </div>
+                    </div></Link>
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:block">
