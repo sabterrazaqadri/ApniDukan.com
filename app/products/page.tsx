@@ -40,40 +40,37 @@ export default function AllProducts() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        // Fetch all categories
-        const categoriesResult = await client.fetch(
-          groq`*[_type == "category"] {
-            name,
-            "slug": slug.current
-          }`
-        );
+        // Fetch categories first
+        const categoriesQuery = groq`*[_type == "category"] {
+          name,
+          slug {
+            current
+          }
+        }`;
+        const categoriesResult = await client.fetch(categoriesQuery);
         setCategories(categoriesResult);
 
-        // Fetch all products with their categories
-        const result = await client.fetch(
-          groq`*[_type == "product"] {
-            _id,
-            name,
-            price,
-            description,
-            "image": {
-              "asset": {
-                "url": image.asset->url
-              }
-            },
-            slug,
-            "category": category->{
-              name,
-              "slug": slug
+        // Then fetch products
+        const productsQuery = groq`*[_type == "product"] {
+          _id,
+          name,
+          price,
+          description,
+          "image": {
+            "asset": {
+              "url": image.asset->url
             }
-          }`, { caches: 'no-store' }
-        );
-        
-        // Randomly shuffle the products
-        const shuffledProducts = [...result].sort(() => Math.random() - 0.5);
-        setProducts(shuffledProducts);
+          },
+          "slug": slug.current,
+          "category": category->{
+            name,
+            "slug": slug.current
+          }
+        }`;
+        const result = await client.fetch(productsQuery);
+        setProducts(result);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
@@ -84,7 +81,16 @@ export default function AllProducts() {
 
   const filteredProducts = selectedCategory === 'all'
     ? products
-    : products.filter(product => product.category?.slug?.current === selectedCategory);
+    : products.filter(product => {
+        console.log('Product category:', product.category);
+        return product.category && product.category.slug.current === selectedCategory;
+      });
+
+  useEffect(() => {
+    console.log('Selected Category:', selectedCategory);
+    console.log('All Products:', products);
+    console.log('Filtered Products:', filteredProducts);
+  }, [selectedCategory, products, filteredProducts]);
 
   const handleAddToCart = (product: Product) => {
     addToCart(product, 1);
@@ -104,34 +110,33 @@ export default function AllProducts() {
 
   return (
     <section className="bg-pink-50 mx-auto lg:px-40 px-6 py-8">
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">All Products</h1>
         
-        {/* Category Filter */}
+        {/* Category Filter Buttons */}
         <div className="flex flex-wrap gap-2 mb-6">
           <button
             key="all"
             onClick={() => setSelectedCategory('all')}
             className={`px-4 py-2 rounded-full ${
-              selectedCategory === 'all'
-                ? 'bg-pink-600 text-white'
+              selectedCategory === 'all' 
+                ? 'bg-pink-600 text-white' 
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             } transition-colors duration-200`}
           >
             All
           </button>
-          {categories.map((category, index) => (
+          {categories.map((cat) => (
             <button
-              key={index}
-              onClick={() => setSelectedCategory(category.slug.current)}
+              key={cat.slug.current}
+              onClick={() => setSelectedCategory(cat.slug.current)}
               className={`px-4 py-2 rounded-full ${
-                selectedCategory === category.slug.current
-                  ? 'bg-pink-600 text-white'
+                selectedCategory === cat.slug.current 
+                  ? 'bg-pink-600 text-white' 
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               } transition-colors duration-200`}
             >
-              {category.name}
+              {cat.name}
             </button>
           ))}
         </div>
@@ -170,6 +175,7 @@ export default function AllProducts() {
           </div>
         ))}
       </div>
+      
       {showNotification && <CartNotification isOpen={true} onClose={() => setShowNotification(false)} productName={''} />}
     </section>
   );
